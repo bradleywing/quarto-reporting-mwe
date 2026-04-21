@@ -1,0 +1,440 @@
+---
+title: "Quarto Reporting Minimal Working Example"
+format:
+  html:
+    theme: styles/brief.scss
+    css:
+      - styles/fontawesome/css/all.min.css
+    toc: false
+    page-layout: full
+    pdf-engine: chromium
+execute:
+  echo: false
+  warning: false
+  message: false
+
+extensions:
+  - shafayetShafee/bsicons
+
+params:
+  report_date: "2026-01-01"
+  fiscal_system: "state"
+  period: "quarter"
+---
+
+# Quarto Reporting Minimal Working Example
+
+```{r}
+#| label: load-foo-data
+#| eval: false
+#| include: false
+
+# This chunk is included to illustrate how to use the etl pipeline to load data
+# and filter it for the relevant reporting period.
+
+# # Set default fallback parameters for running code interactively during
+# # development since Quarto params are only passed when rendering the document
+# if (
+#   !exists(
+#     "params"
+#   )
+# ) {
+#   params <- list(
+#     report_date = "2026-01-01",
+#     fiscal_system = "state",
+#     period = "quarter"
+#   )
+# }
+
+# # Load ETL output
+# source(
+#   "R/load_data.R"
+# )
+
+# # Run the function to load foo data
+# foo_data <- load_foo_data()
+```
+
+```{r}
+#| label: filter-foo-data
+#| eval: false
+#| include: false
+
+# period <- reporting_period(
+#   date = params$report_date,
+#   system = params$fiscal_system,
+#   period = "quarter"
+# )
+
+# start_date <- period$start
+# end_date <- period$end
+
+# foo_full_data <- foo_data$foo_full_data |>
+#   dplyr::filter(
+#     enrollment_starting_date >= start_date,
+#     enrollment_starting_date <= end_date
+#   )
+```
+
+## Callout Blocks in Quarto
+
+Quarto supports several types of callout blocks to highlight information. These are built‑in and require no extensions. Callouts can contain text, code blocks, tables, or inline icons. However, note that callouts should be used for *concise* highlights. Do not place long lines of code in callout boxes because they do not break across pages by default.
+
+### Basic Syntax
+
+Callouts use the `:::` fence with a class. For example, the following is how to create a Note tip, used for sharing general information:
+
+::: {.callout-note}
+### Note
+This is a note callout.
+:::
+
+````md
+::: {.callout-note}
+### Note
+This is a note callout.
+:::
+````
+
+### Other Types of Callouts
+
+Below are examples of the main callout types that are available to supplement the Note callout shown above. Each shows the source code and the rendered output.
+
+#### Tip - Helpful Hints
+
+````md
+::: {.callout-tip}
+### Tip
+This is a tip callout.
+:::
+````
+
+::: {.callout-tip}
+### Tip
+This is a tip callout.
+:::
+
+#### Warning - Advice About Serious Issues
+
+````md
+::: {.callout-warning}
+### Warning
+This is a warning callout.
+:::
+````
+
+::: {.callout-warning}
+### Warning
+This is a warning callout.
+:::
+
+#### Caution - Cautionary Advice About Potential Problems
+
+````md
+::: {.callout-caution}
+### Caution
+This is a caution callout.
+:::
+````
+
+::: {.callout-caution}
+### Caution
+This is a caution callout.
+:::
+
+#### Important - Critical Information
+
+````md
+::: {.callout-important}
+### Important
+This is an important callout.
+:::
+````
+
+::: {.callout-important}
+### Important
+This is an important callout.
+:::
+
+#### Overriding Titles
+
+Titles can be added with a `title="..."` attribute to override the heading.
+
+````md
+::: {.callout-important title="Critical Deadline"}
+This callout uses a custom title instead of the default “Important.”
+:::
+````
+
+::: {.callout-important title="Critical Deadline"}
+This callout uses a custom title instead of the default “Important.”
+:::
+
+### Cross-Referencing Callouts
+
+To cross-reference a callout, add an ID attribute starting with the appropriate callout prefix. This allows one to reference a callout using the usual @ syntax.
+
+````md
+::: {#tip-cross-reference-example .callout-tip}
+# Cross-Reference Guidance
+Add an ID starting with `#tip-` to reference a tip.
+:::
+
+See @tip-cross-reference-example...
+````
+
+This renders as:
+
+::: {#tip-cross-reference-example .callout-tip}
+# Cross-Reference Guidance
+
+Add an ID starting with `#tip-` to reference a tip.
+:::
+
+See @tip-cross-reference-example...
+
+#### Callout Prefixes
+
+Each callout type has a specific prefix for this purpose.
+
+| Callout Type | Prefix |
+|--------------|--------|
+| note         | #nte-  |
+| tip          | #tip-  |
+| warning      | #wrn-  |
+| important    | #imp-  |
+| caution      | #cau-  |
+
+### Callout Appearance Styles
+
+Quarto supports three built‑in styles for callouts:
+
+- **default** – full styling with border, background, and icon  
+- **simple** – lighter styling with reduced border and background  
+- **minimal** – text‑only, no header or background
+
+#### Local (Per Callout)
+
+You can set the style as an attribute on a single block:
+
+````md
+::: {.callout-tip appearance="default"}
+### Default Tip
+This callout uses the default style.
+:::
+````
+::: {.callout-tip appearance="default"}
+### Default Tip
+This callout uses the default style.
+:::
+
+````md
+::: {.callout-tip appearance="simple"}
+### Simple Tip
+This callout uses the simple style.
+:::
+````
+
+::: {.callout-tip appearance="simple"}
+### Simple Tip
+This callout uses the simple style.
+:::
+
+````md
+::: {.callout-tip appearance="minimal"}
+### Minimal Tip
+This callout uses the minimal style.
+:::
+````
+
+::: {.callout-tip appearance="minimal"}
+### Minimal Tip
+This callout uses the minimal style.
+:::
+
+#### Global (All Callouts)
+
+To apply a style to all callouts in a document, set the option in the YAML front matter:
+
+````md
+```yaml
+format:
+  html:
+    callout-appearance: simple
+  pdf:
+    callout-appearance: minimal
+```
+````
+### Icons in Callouts
+
+By default, callouts include an icon, which vary by callout type. You can disable icons globally or locally.
+
+#### Local (Per Callout)
+
+Add icon=false to the block attributes:
+
+````md
+::: {.callout-note icon=false}
+### Note Without Icon
+This callout has no icon.
+:::
+````
+
+::: {.callout-note icon=false}
+### Note Without Icon
+This callout has no icon.
+:::
+
+#### Global (All Callouts)
+
+Set the option in the YAML front matter:
+
+````md
+---
+format:
+  html:
+    callout-icon: false
+  pdf:
+    callout-icon: false
+---
+````
+
+#### Enhancing Callouts With Additional Icons
+
+Callouts can also be enhanced with icons for emphasis. For example, you may insert Font Awesome icons inline to visually distinguish tips, warnings, or highlights. See the [Font Awesome section](#font-awesome) later in this guide for detailed instructions on customizing icons (color, size, alignment) in both PDF and HTML outputs.
+
+::: {.callout-tip}
+### Workforce Trend
+<i class="fa-solid fa-arrows-down-to-people icon-lg icon-primary"></i> Admissions are decreasing.
+:::
+
+## Basic Icon Usage
+
+### Font Awesome 6
+
+<i class="fa-solid fa-chart-line icon icon-md"></i>
+
+### Bootstrap Icons
+
+<i class="bi bi-person-standing-dress icon icon-md"></i>
+
+Both use the same utility classes.
+
+---
+
+## Icon Sizes
+
+Use one of the following:
+
+| Class     | Size        | Use case          |
+|-----------|-------------|-------------------|
+| icon-xs   | very small  | inline labels     |
+| icon-sm   | small       | table cells       |
+| icon-md   | medium      | default           |
+| icon-lg   | large       | section headers   |
+| icon-xl   | extra large | hero metrics      |
+
+### Extra Small Example:
+
+<i class="fa-solid fa-users icon icon-xs"></i>
+
+### Small Example:
+
+<i class="fa-solid fa-users icon icon-sm"></i>
+
+### Medium Example:
+
+<i class="fa-solid fa-users icon icon-md"></i>
+
+### Large Example:
+
+<i class="fa-solid fa-users icon icon-lg"></i>
+
+### Extra Large Example:
+
+<i class="fa-solid fa-users icon icon-xl"></i>
+
+---
+
+## Icon Colors
+
+| Class          | Color        | Use case          |
+|----------------|--------------|-------------------|
+| icon-primary   | blue         | default           |
+| icon-secondary | gray         | neutral           |
+| icon-muted     | light gray   | de‑emphasis       |
+| icon-success   | green        | positive trend    |
+| icon-warning   | gold         | caution           |
+| icon-danger    | red          | negative trend    |
+
+### Primary Example:
+
+<i class="bi bi-graph-down icon icon-lg icon-primary"></i>
+
+### Secondary Example:
+
+<i class="bi bi-graph-down icon icon-lg icon-secondary"></i>
+
+### Muted Example:
+
+<i class="bi bi-graph-down icon icon-lg icon-muted"></i>
+
+### Success Example:
+
+<i class="bi bi-graph-down icon icon-lg icon-success"></i>
+
+### Warning Example:
+
+<i class="bi bi-graph-down icon icon-lg icon-warning"></i>
+
+### Danger Example:
+
+<i class="bi bi-graph-down icon icon-lg icon-danger"></i>
+
+---
+
+## Inline Alignment
+
+Use `icon-inline` when placing an icon before text:
+
+<i class="fa-solid fa-circle-info icon icon-inline icon-md"></i>
+Important Note
+
+---
+
+## Panel Header Component
+
+Use this pattern to create consistent section headerswith a **local rule** that does *not* span the full page:
+
+```{=html}
+<div class="panel-header">
+  <div class="panel-header-main">
+    <i class="fa-solid fa-arrows-down-to-people icon icon-lg icon-primary"></i>
+    <span class="panel-title">Workforce Trend</span>
+  </div>
+  <div class="panel-header-rule"></div>
+</div>
+```
+
+This produces:
+
+- icon  
+- title  
+- a short rule aligned to the header  
+- spacing that feels like a dashboard panel, not a page divider  
+
+---
+
+## Full Example
+
+```{=html}
+<div class="panel-header">
+  <div class="panel-header-main">
+    <i class="bi bi-people icon icon-lg icon-primary"></i>
+    <span class="panel-title">Referral Overview</span>
+  </div>
+  <div class="panel-header-rule"></div>
+</div>
+
+<p>Referral volume increased by 12% this quarter.</p>
+```
